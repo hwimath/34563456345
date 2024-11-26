@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>초등어휘 단어 게임</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #FFFAF0;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #FF69B4;
+        }
+        .hidden {
+            display: none;
+        }
+        .section {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #FFF0F5;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .button {
+            background-color: #FF69B4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 15px 5px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .button:hover {
+            background-color: #FF1493;
+        }
+        .quiz-option {
+            display: block;
+            text-align: left;
+            margin: 10px 0;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        #score {
+            font-size: 24px;
+            color: #32CD32;
+        }
+    </style>
+</head>
+<body>
+
+<h1>✨ 초등어휘 단어 게임 ✨</h1>
+
+<div id="studySection" class="section">
+    <div id="studyContent">
+        <!-- Study content will be injected here -->
+    </div>
+    <button class="button" id="nextStudyBtn">다음</button>
+</div>
+
+<div id="quizSection" class="section hidden">
+    <h2>단어 퀴즈</h2>
+    <div id="quizContent">
+        <!-- Quiz content will be injected here -->
+    </div>
+    <button class="button" id="nextQuizBtn">다음</button>
+    <button class="button hidden" id="submitQuizBtn">제출</button>
+</div>
+
+<div id="scoreSection" class="section hidden">
+    <h2>🎉 점수 🎉</h2>
+    <p id="score">0 / 10</p>
+    <button class="button" onclick="location.reload()">다시 하기</button>
+</div>
+
+<script>
+    // 데이터 정의
+    const words = [
+        { word: "가격", definition: "물건이 거래될 때 매겨지는 값." },
+        { word: "가구", definition: "집안에서 쓰이는 살림살이 도구." },
+        { word: "가까워지다", definition: "거리가 짧아지거나 친밀해지다." },
+        { word: "가까이", definition: "시간이나 거리가 짧은 곳이나 때." },
+        { word: "가꾸다", definition: "식물 등을 심어 기르다." },
+        { word: "가난하다", definition: "재산이나 돈이 없어 생활이 어렵다." },
+        { word: "가늘다", definition: "굵기가 작거나 얇다." },
+        { word: "가능성", definition: "어떤 일이 일어날 수 있는 성질이나 정도." }
+    ];
+
+    const sentences = {
+        "가격": [
+            "이 물건의 가격은 얼마입니까?",
+            "가격이 너무 비싸서 살 수 없어요.",
+            "할인해서 가격이 저렴해졌어요."
+        ],
+        "가구": [
+            "우리 집에 새 가구를 샀어요.",
+            "그 방에는 멋진 가구들이 많아요.",
+            "가구를 옮기다가 허리를 다쳤어요."
+        ],
+        "가까워지다": [
+            "우리는 친구가 되어 가까워졌어요.",
+            "집이 학교와 가까워져서 좋아요.",
+            "기차역이 여기서 가까워졌어요."
+        ],
+        "가까이": [
+            "집 근처에 가까이 있는 공원에 갔어요.",
+            "나는 그를 가까이에서 본 적이 없어요.",
+            "가까이 다가오면 보인다."
+        ],
+        "가꾸다": [
+            "엄마는 정원을 아름답게 가꾸셨어요.",
+            "나는 꽃을 가꾸는 것을 좋아해요.",
+            "그는 자신의 몸매를 잘 가꾸고 있어요."
+        ],
+        "가난하다": [
+            "그 가족은 매우 가난해서 도움이 필요해요.",
+            "가난하지만 행복하게 살아요.",
+            "그는 가난한 사람들을 돕고 싶어해요."
+        ],
+        "가늘다": [
+            "그녀의 손가락은 가늘고 길어요.",
+            "이 선은 너무 가늘어서 잘 안 보여요.",
+            "가는 목소리로 노래를 불렀어요."
+        ],
+        "가능성": [
+            "성공할 가능성이 높아요.",
+            "비가 올 가능성이 있어요.",
+            "그 일이 될 가능성은 거의 없어요."
+        ]
+    };
+
+    const quizQuestions = [
+        {
+            question: "1. 이 물건의 ____은 얼마입니까?",
+            options: ["가격", "가구"],
+            correctAnswer: "가격"
+        },
+        {
+            question: "2. 나는 꽃을 ____ 것을 좋아해요.",
+            options: ["가까이", "가꾸는"],
+            correctAnswer: "가꾸는"
+        },
+        {
+            question: "3. 집 근처에 ____ 있는 공원에 갔어요.",
+            options: ["가까이", "가능성"],
+            correctAnswer: "가까이"
+        },
+        {
+            question: "4. 우리는 친구가 되어 ____.",
+            options: ["가난해졌다", "가까워졌다"],
+            correctAnswer: "가까워졌다"
+        },
+        {
+            question: "5. 그 가족은 매우 ____ 도움이 필요해요.",
+            options: ["가난해서", "가늘어서"],
+            correctAnswer: "가난해서"
+        },
+        {
+            question: "6. 성공할 ____ 높아요.",
+            options: ["가능성이", "가격이"],
+            correctAnswer: "가능성이"
+        },
+        {
+            question: "7. 그녀의 손가락은 ____ 길어요.",
+            options: ["가늘고", "가까워지고"],
+            correctAnswer: "가늘고"
+        },
+        {
+            question: "8. 우리 집에 새 ____를 샀어요.",
+            options: ["가격", "가구"],
+            correctAnswer: "가구"
+        },
+        {
+            question: "9. 할인해서 ____ 저렴해졌어요.",
+            options: ["가격이", "가능성이"],
+            correctAnswer: "가격이"
+        },
+        {
+            question: "10. 엄마는 정원을 아름답게 ____.",
+            options: ["가꾸셨어요", "가까워졌어요"],
+            correctAnswer: "가꾸셨어요"
+        }
+    ];
+
+    // 상태 변수
+    let currentWordIndex = 0;
+    let currentQuizIndex = 0;
+    let score = 0;
+
+    // 초기화 함수
+    function showDefinition() {
+        if (currentWordIndex < words.length) {
+            const word = words[currentWordIndex];
+            document.getElementById('studyContent').innerHTML = `
+                <h2>단어 뜻 배우기</h2>
+                <h3>${word.word}</h3>
+                <p>${word.definition}</p>
+            `;
+        } else {
+            // 모든 단어 학습이 끝나면 퀴즈 시작
+            document.getElementById('studySection').classList.add('hidden');
+            initQuiz();
+            document.getElementById('quizSection').classList.remove('hidden');
+        }
+    }
+
+    function showSentences() {
+        const word = words[currentWordIndex];
+        const sentenceList = sentences[word.word];
+        let sentencesHTML = `<h2>예문 배우기</h2><h3>${word.word}</h3>`;
+        sentenceList.forEach(sentence => {
+            sentencesHTML += `<p>• ${sentence}</p>`;
+        });
+        document.getElementById('studyContent').innerHTML = sentencesHTML;
+    }
+
+    // 버튼 이벤트 리스너
+    document.getElementById('nextStudyBtn').addEventListener('click', () => {
+        if (document.getElementById('studyContent').innerHTML.includes('단어 뜻 배우기')) {
+            showSentences();
+        } else {
+            currentWordIndex++;
+            showDefinition();
+        }
+    });
+
+    // 퀴즈 함수
+    function initQuiz() {
+        if (currentQuizIndex < quizQuestions.length) {
+            const q = quizQuestions[currentQuizIndex];
+            document.getElementById('quizContent').innerHTML = `
+                <p>${q.question}</p>
+                ${q.options.map((option, index) => `
+                    <label class="quiz-option">
+                        <input type="radio" name="quiz${currentQuizIndex}" value="${option}">
+                        ${option}
+                    </label>
+                `).join('')}
+            `;
+            // Toggle buttons
+            if (currentQuizIndex === quizQuestions.length - 1) {
+                document.getElementById('nextQuizBtn').classList.add('hidden');
+                document.getElementById('submitQuizBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('nextQuizBtn').classList.remove('hidden');
+            }
+        }
+    }
+
+    document.getElementById('nextQuizBtn').addEventListener('click', () => {
+        const q = quizQuestions[currentQuizIndex];
+        const selected = document.querySelector(`input[name="quiz${currentQuizIndex}"]:checked`);
+        if (selected) {
+            if (selected.value === q.correctAnswer) {
+                score++;
+            }
+            currentQuizIndex++;
+            initQuiz();
+        } else {
+            alert("답을 선택해주세요!");
+        }
+    });
+
+    document.getElementById('submitQuizBtn').addEventListener('click', () => {
+        const q = quizQuestions[currentQuizIndex];
+        const selected = document.querySelector(`input[name="quiz${currentQuizIndex}"]:checked`);
+        if (selected) {
+            if (selected.value === q.correctAnswer) {
+                score++;
+            }
+            currentQuizIndex++;
+            showScore();
+        } else {
+            alert("답을 선택해주세요!");
+        }
+    });
+
+    function showScore() {
+        document.getElementById('quizSection').classList.add('hidden');
+        document.getElementById('score').innerText = `${score} / ${quizQuestions.length}`;
+        document.getElementById('scoreSection').classList.remove('hidden');
+    }
+
+    // 초기화 시작
+    showDefinition();
+</script>
+
+</body>
+</html>
